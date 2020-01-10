@@ -25,7 +25,7 @@ Se já possui um arquivo `composer.json`, basta adicionar a seguinte dependênci
 Com a dependência adicionada ao `composer.json`, basta executar:
 
 ```
-composer install
+composer update
 ```
 
 Alternativamente, você pode executar diretamente em seu terminal:
