@@ -27,47 +27,61 @@ class Request{
         $this->basic_password = trim($password);
     }
 
-    public function sendSMS($to, $msg, $schedule, $from = '')
+    public function sendSMS($to, $msg, $schedule = '')
     {       
         if(empty($schedule)){
-            $schedule ='2020-01-10T16:00:00';
+            $schedule = date('Y-m-d\TH:i:s');
         }
         
         $action = '/send-sms';
         $token = $this->getToken();
-        echo $token;
-        exit();
 
         $body = array();
-a
-        $body['sendSmsRequest'] = ['from' => $from, 'to' => $to, 'schedule' => $schedule, 'msg' => $msg, 'flashSms' => false];
+        $body['sendSmsRequest'] = ['to' => $to, 'msg' => $msg, 'schedule' => $schedule];
 
         return $this->sendRequest('POST', $token, $action, $body);
     }
 
-    public function getToken()
+    public function sendSMSMultipe($sms = Array(), $schedule = '')
+    {       
+        
+        $action = '/send-sms-multiple';
+        $token = $this->getToken();
+
+        $body = array();
+
+        foreach ($sms as $key => $value) {
+            if(empty($value['schedule'])){
+                $schedule = date('Y-m-d\TH:i:s');
+            }else{
+                $schedule = $value['schedule'];
+            }
+            $body['sendSmsMultiRequest']['sendSmsRequestList'][] = ['to' => $value['to'], 'msg' =>  $value['msg'], 'schedule' => $schedule];
+        }   
+
+        return $this->sendRequest('POST', $token, $action, $body);
+    }
+
+    protected function getToken()
     {
-        $content = base64_encode($this->basic_username . ':' . $this->basic_password);
-        return $content;
+        return base64_encode($this->basic_username . ':' . $this->basic_password);
     }
 
     protected function sendRequest($method, $token, $action, $content = null)
     {
+
         $url = $this->URL . $action;
         $headers = array();
         $ch = curl_init($url);
         
-        $media_type = $this->media_type[0];
         $payloadName = json_encode($content);
 
-        $headers[] = "Authorization: Bearer {$token->access_token}";        
+        $headers[] = "Authorization: Basic {$token}";        
         $headers[] = "Content-Type: application/json"; 
         $headers[] = "Accept: application/json"; 
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        if($content !== NULL){
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payloadName);
-        }
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payloadName);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         $return = curl_exec($ch);
