@@ -91,5 +91,4 @@ class Request{
             return $return;        
         curl_close($ch);               
     }
-
 }
