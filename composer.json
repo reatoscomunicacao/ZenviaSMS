@@ -1,0 +1,22 @@
+{
+    "name": "reatos/zenvia",
+    "description": "Integração com a API do Zenvia",
+    "type": "library",
+    "license": "Mit",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Thalles Brandão",
+            "email": "thalles-brandao@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Zenvia\\": ["src/Zenvia/" ]
+        }
+    }
+}
